@@ -1,0 +1,6 @@
+twitter:
+    enabled: false
+    consumer_key: aaa
+    consumer_secret: aaa
+    access_token_key: aaa
+    access_token_secret: aaa

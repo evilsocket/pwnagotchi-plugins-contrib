@@ -1,0 +1,3 @@
+screen_refresh:
+    enabled: false
+    refresh_interval: 50
