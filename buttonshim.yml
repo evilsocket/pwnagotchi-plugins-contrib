@@ -1,0 +1,53 @@
+buttonshim:
+    enabled: false
+    buttons:
+        A:
+            command: ''
+            blink:
+                enabled: false
+                red: 0
+                green: 0
+                blue: 0
+                on_time: 0
+                off_time: 0
+                blink_times: 0
+        B:
+            command: ''
+            blink:
+                enabled: false
+                red: 0
+                green: 0
+                blue: 0
+                on_time: 0
+                off_time: 0
+                blink_times: 0
+        C:
+            command: ''
+            blink:
+                enabled: false
+                red: 0
+                green: 0
+                blue: 0
+                on_time: 0
+                off_time: 0
+                blink_times: 0
+        D:
+            command: ''
+            blink:
+                enabled: false
+                red: 0
+                green: 0
+                blue: 0
+                on_time: 0
+                off_time: 0
+                blink_times: 0
+        E:
+            command: ''
+            blink:
+                enabled: false
+                red: 0
+                green: 0
+                blue: 0
+                on_time: 0
+                off_time: 0
+                blink_times: 0
