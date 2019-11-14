@@ -43,6 +43,7 @@ class QuickDic(plugins.Plugin):
                 pwd = str(key.group(1))
                 self.text_to_set = "Cracked password: " + pwd
                 display.update(force=True)
+                plugins.on('cracked', access_point, pwd)
 
     def on_ui_update(self, ui):
         if self.text_to_set:
