@@ -1,0 +1,3 @@
+gpio_shutdown:
+    enabled: false
+    gpio: 21
