@@ -47,6 +47,7 @@ class AircrackOnly(plugins.Plugin):
         if todelete == 1:
             os.remove(filename)
             self.text_to_set = "Removed an uncrackable pcap"
+            logging.warning("Removed uncrackable pcap " + filename)
             display.update(force=True)
 
     def on_ui_update(self, ui):
