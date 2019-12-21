@@ -1,0 +1,6 @@
+mastodon:
+  enabled: false
+  instance_url: ~
+  visibility: unlisted
+  email: ~
+  password: ~
