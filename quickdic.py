@@ -8,7 +8,7 @@ import pwnagotchi.plugins as plugins
 Aircrack-ng needed, to install:
 > apt-get install aircrack-ng
 Upload wordlist files in .txt format to folder in config file (Default: /opt/wordlists/)
-Cracked handshakes stored in handshake folder as [essid].pcap.cracked 
+Cracked handshakes stored in handshake folder as [essid].pcap.cracked
 '''
 
 
@@ -23,6 +23,13 @@ class QuickDic(plugins.Plugin):
 
     def on_loaded(self):
         logging.info("Quick dictionary check plugin loaded")
+        check = subprocess.run(
+            ('/usr/bin/dpkg -l aircrack-ng | grep aircrack-ng | awk \'{print $2, $3}\''), shell=True, stdout=subprocess.PIPE)
+        check = check.stdout.decode('utf-8').strip()
+        if check != "aircrack-ng <none>":
+            logging.info("quickdic: Found " + check)
+        else:
+            logging.warning("aircrack-ng is not installed!")
 
     def on_handshake(self, agent, filename, access_point, client_station):
         display = agent.view()
@@ -35,7 +42,7 @@ class QuickDic(plugins.Plugin):
             logging.info("[quickdic] Handshake confirmed")
             result2 = subprocess.run(('aircrack-ng -w `echo ' + self.options[
                 'wordlist_folder'] + '*.txt | sed \'s/\ /,/g\'` -l ' + filename + '.cracked -q -b ' + result + ' ' + filename + ' | grep KEY'),
-                                     shell=True, stdout=subprocess.PIPE)
+                shell=True, stdout=subprocess.PIPE)
             result2 = result2.stdout.decode('utf-8').strip()
             logging.info("[quickdic] " + result2)
             if result2 != "KEY NOT FOUND":
