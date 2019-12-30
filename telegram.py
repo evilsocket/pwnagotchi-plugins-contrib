@@ -39,12 +39,15 @@ class Telegram(plugins.Plugin):
                 message = Voice(lang=config['main']['lang']).on_last_session_tweet(last_session)
 
                 bot = telegram.Bot(self.options['bot_token'])
-                bot.sendPhoto(chat_id=self.options['chat_id'], photo=open(picture, 'rb'))
-                bot.sendMessage(chat_id=self.options['chat_id'], text=message, disable_web_page_preview=True)
+                if self.options['send_picture'] is True:
+                    bot.sendPhoto(chat_id=self.options['chat_id'], photo=open(picture, 'rb'))
+                    logging.info("telegram: picture sent")
+                if self.options['send_message'] is True:
+                    bot.sendMessage(chat_id=self.options['chat_id'], text=message, disable_web_page_preview=True)
+                    logging.info("telegram: message sent: %s" % message)
 
                 last_session.save_session_id()
-                logging.info("telegram: %s" % message)
-                display.set('status', 'Message sent!')
+                display.set('status', 'Telegram notification sent!')
                 display.update(force=True)
             except Exception:
                 logging.exception("Error while sending on Telegram")
