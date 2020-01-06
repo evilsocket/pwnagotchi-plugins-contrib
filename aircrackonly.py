@@ -22,6 +22,10 @@ class AircrackOnly(plugins.Plugin):
 
     def on_loaded(self):
         logging.info("aircrackonly plugin loaded")
+
+        if 'face' not in self.options:
+            self.options['face'] = '(>.<)'
+
         check = subprocess.run(
             ('/usr/bin/dpkg -l aircrack-ng | grep aircrack-ng | awk \'{print $2, $3}\''), shell=True, stdout=subprocess.PIPE)
         check = check.stdout.decode('utf-8').strip()
@@ -59,6 +63,6 @@ class AircrackOnly(plugins.Plugin):
 
     def on_ui_update(self, ui):
         if self.text_to_set:
-            ui.set('face', "(>.<)")
+            ui.set('face', self.options['face'])
             ui.set('status', self.text_to_set)
             self.text_to_set = ""

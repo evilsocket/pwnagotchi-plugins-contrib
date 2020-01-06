@@ -1,2 +1,3 @@
 aircrackonly:
     enabled: false
+    face: '(>.<)'
