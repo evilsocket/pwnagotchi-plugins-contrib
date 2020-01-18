@@ -15,6 +15,11 @@ class PwnClock(plugins.Plugin):
     __description__ = 'Clock/Calendar for pwnagotchi'
 
     def on_loaded(self):
+        if 'date_format' in self.options:
+            self.date_format = self.options['date_format']
+        else:
+            self.date_format = "%m/%d/%y"
+
         logging.info("Pwnagotchi Clock Plugin loaded.")
 
     def on_ui_setup(self, ui):
@@ -36,5 +41,5 @@ class PwnClock(plugins.Plugin):
 
     def on_ui_update(self, ui):
         now = datetime.datetime.now()
-        time_rn = now.strftime("%m/%d/%y\n%I:%M%p")
+        time_rn = now.strftime(self.date_format + "\n%I:%M %p")
         ui.set('clock', time_rn)
