@@ -1,0 +1,7 @@
+telegram:
+  enabled: false
+  bot_token: ~
+  bot_name: pwnagotchi
+  chat_id: ~
+  send_picture: true
+  send_message: true

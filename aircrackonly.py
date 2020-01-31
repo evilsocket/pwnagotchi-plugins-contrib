@@ -23,6 +23,17 @@ class AircrackOnly(plugins.Plugin):
     def on_loaded(self):
         logging.info("aircrackonly plugin loaded")
 
+        if 'face' not in self.options:
+            self.options['face'] = '(>.<)'
+
+        check = subprocess.run(
+            ('/usr/bin/dpkg -l aircrack-ng | grep aircrack-ng | awk \'{print $2, $3}\''), shell=True, stdout=subprocess.PIPE)
+        check = check.stdout.decode('utf-8').strip()
+        if check != "aircrack-ng <none>":
+            logging.info("aircrackonly: Found " + check)
+        else:
+            logging.warning("aircrack-ng is not installed!")
+
     def on_handshake(self, agent, filename, access_point, client_station):
         display = agent._view
         todelete = 0
@@ -47,10 +58,11 @@ class AircrackOnly(plugins.Plugin):
         if todelete == 1:
             os.remove(filename)
             self.text_to_set = "Removed an uncrackable pcap"
+            logging.warning("Removed uncrackable pcap " + filename)
             display.update(force=True)
 
     def on_ui_update(self, ui):
         if self.text_to_set:
-            ui.set('face', "(>.<)")
+            ui.set('face', self.options['face'])
             ui.set('status', self.text_to_set)
             self.text_to_set = ""
