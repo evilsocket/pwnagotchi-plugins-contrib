@@ -31,7 +31,7 @@ TEMPLATE = """
 
 class HandshakesDL(plugins.Plugin):
     __author__ = 'me@sayakb.com'
-    __version__ = '0.1.0'
+    __version__ = '0.1.1'
     __license__ = 'GPL3'
     __description__ = 'Download handshake captures from web-ui.'
 
@@ -41,12 +41,8 @@ class HandshakesDL(plugins.Plugin):
     def on_loaded(self):
         logging.info("[HandshakesDL] plugin loaded")
 
-    def on_ready(self, agent):
-        self.config = agent.config()
-        self.ready = True
-
-    def on_internet_available(self, agent):
-        self.config = agent.config()
+    def on_config_changed(self, config):
+        self.config = config
         self.ready = True
 
     def on_webhook(self, path, request):
