@@ -42,24 +42,24 @@ class AutoBackup(plugins.Plugin):
         try:
             display = agent.view()
 
-            logging.info("AUTO-BACKUP: Backing up ...")
+            logging.info("AUTO_BACKUP: Backing up ...")
             display.set('status', 'Backing up ...')
             display.update()
 
             for cmd in self.options['commands']:
-                logging.info(f"AUTO-BACKUP: Running {cmd.format(files=files_to_backup)}")
+                logging.info(f"AUTO_BACKUP: Running {cmd.format(files=files_to_backup)}")
                 process = subprocess.Popen(cmd.format(files=files_to_backup), shell=True, stdin=None,
                                            stdout=open("/dev/null", "w"), stderr=None, executable="/bin/bash")
                 process.wait()
                 if process.returncode > 0:
                     raise OSError(f"Command failed (rc: {process.returncode})")
 
-            logging.info("AUTO-BACKUP: backup done")
+            logging.info("AUTO_BACKUP: backup done")
             display.set('status', 'Backup done!')
             display.update()
             self.status.update()
         except OSError as os_e:
             self.tries += 1
-            logging.info(f"AUTO-BACKUP: Error: {os_e}")
+            logging.info(f"AUTO_BACKUP: Error: {os_e}")
             display.set('status', 'Backup failed!')
             display.update()
