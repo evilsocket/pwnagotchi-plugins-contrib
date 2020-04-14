@@ -67,7 +67,7 @@ TEMPLATE = """
 
 class HandshakesDL(plugins.Plugin):
     __author__ = 'me@sayakb.com'
-    __version__ = '0.1.1'
+    __version__ = '0.2.1'
     __license__ = 'GPL3'
     __description__ = 'Download handshake captures from web-ui.'
 
