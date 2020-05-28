@@ -1,16 +1,13 @@
-import logging
-import json
-import os
 import glob
+import json
+import logging
+import os
 import zipfile
 from io import BytesIO
 
 import pwnagotchi
 import pwnagotchi.plugins as plugins
-
-from flask import abort
-from flask import send_from_directory, send_file
-from flask import render_template_string
+from flask import abort, render_template_string, send_file, send_from_directory
 
 TEMPLATE = """
 {% extends "base.html" %}
