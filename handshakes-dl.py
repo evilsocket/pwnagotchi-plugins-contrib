@@ -32,6 +32,7 @@ TEMPLATE = """
 {% endblock %}
 """
 
+
 class HandshakesDL(plugins.Plugin):
     __author__ = 'me@sayakb.com'
     __version__ = '0.1.0'
@@ -57,16 +58,18 @@ class HandshakesDL(plugins.Plugin):
             return "Plugin not ready"
 
         if path == "/" or not path:
-            handshakes = glob.glob(os.path.join(self.config['bettercap']['handshakes'], "*.pcap"))
+            handshakes = glob.glob(os.path.join(
+                self.config['bettercap']['handshakes'], "*.pcap"))
             handshakes = [os.path.basename(path)[:-5] for path in handshakes]
             return render_template_string(TEMPLATE,
-                                    title="Handshakes | " + pwnagotchi.name(),
-                                    handshakes=handshakes)    
+                                          title="Handshakes | " + pwnagotchi.name(),
+                                          handshakes=handshakes)
         elif path == "all":
             logging.info(f"[HandshakesDL] creating Zip-File in memory")
             memory_file = BytesIO()
             with zipfile.ZipFile(memory_file, 'w') as zf:
-                files = glob.glob(os.path.join(self.config['bettercap']['handshakes'], "*.pcap"))
+                files = glob.glob(os.path.join(
+                    self.config['bettercap']['handshakes'], "*.pcap"))
                 try:
                     for individualFile in files:
                         zf.write(individualFile)
