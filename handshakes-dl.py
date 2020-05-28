@@ -59,8 +59,7 @@ class HandshakesDL(plugins.Plugin):
 
         if path == "/" or not path:
             handshakes = glob.glob(
-                os.path.join(self.config["bettercap"]["handshakes"], "*.pcap")
-            )
+                os.path.join(self.config["bettercap"]["handshakes"], "*.pcap"))
             handshakes = [os.path.basename(path)[:-5] for path in handshakes]
             return render_template_string(
                 TEMPLATE,
@@ -72,8 +71,8 @@ class HandshakesDL(plugins.Plugin):
             memory_file = BytesIO()
             with zipfile.ZipFile(memory_file, "w") as zf:
                 files = glob.glob(
-                    os.path.join(self.config["bettercap"]["handshakes"], "*.pcap")
-                )
+                    os.path.join(self.config["bettercap"]["handshakes"],
+                                 "*.pcap"))
                 try:
                     for individualFile in files:
                         zf.write(individualFile)
@@ -82,15 +81,15 @@ class HandshakesDL(plugins.Plugin):
                     abort(404)
             memory_file.seek(0)
             logging.info(f"[HandshakesDL] serving handshakes.zip")
-            return send_file(
-                memory_file, attachment_filename="handshakes.zip", as_attachment=True
-            )
+            return send_file(memory_file,
+                             attachment_filename="handshakes.zip",
+                             as_attachment=True)
         else:
             dir = self.config["bettercap"]["handshakes"]
             try:
                 logging.info(f"[HandshakesDL] serving {dir}/{path}.pcap")
-                return send_from_directory(
-                    directory=dir, filename=path + ".pcap", as_attachment=True
-                )
+                return send_from_directory(directory=dir,
+                                           filename=path + ".pcap",
+                                           as_attachment=True)
             except FileNotFoundError:
                 abort(404)
