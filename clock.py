@@ -5,6 +5,8 @@ import pwnagotchi.plugins as plugins
 import pwnagotchi
 import logging
 import datetime
+import os
+import toml
 import yaml
 
 
@@ -19,8 +21,12 @@ class PwnClock(plugins.Plugin):
 
     def on_ui_setup(self, ui):
         memenable = False
-        with open('/etc/pwnagotchi/config.yml') as f:
-            data = yaml.load(f, Loader=yaml.FullLoader)
+        config_is_toml = True if os.path.exists(
+            '/etc/pwnagotchi/config.toml') else False
+        config_path = '/etc/pwnagotchi/config.toml' if config_is_toml else '/etc/pwnagotchi/config.yml'
+        with open(config_path) as f:
+            data = toml.load(f) if config_is_toml else yaml.load(
+                f, Loader=yaml.FullLoader)
 
             if 'memtemp' in data["main"]["plugins"]:
                 if 'enabled' in data["main"]["plugins"]["memtemp"]:
