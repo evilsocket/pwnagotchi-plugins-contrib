@@ -5,6 +5,8 @@ import pwnagotchi.plugins as plugins
 import pwnagotchi
 import logging
 import datetime
+import os
+import toml
 import yaml
 
 
@@ -15,12 +17,21 @@ class PwnClock(plugins.Plugin):
     __description__ = 'Clock/Calendar for pwnagotchi'
 
     def on_loaded(self):
+        if 'date_format' in self.options:
+            self.date_format = self.options['date_format']
+        else:
+            self.date_format = "%m/%d/%y"
+
         logging.info("Pwnagotchi Clock Plugin loaded.")
 
     def on_ui_setup(self, ui):
         memenable = False
-        with open('/etc/pwnagotchi/config.yml') as f:
-            data = yaml.load(f, Loader=yaml.FullLoader)
+        config_is_toml = True if os.path.exists(
+            '/etc/pwnagotchi/config.toml') else False
+        config_path = '/etc/pwnagotchi/config.toml' if config_is_toml else '/etc/pwnagotchi/config.yml'
+        with open(config_path) as f:
+            data = toml.load(f) if config_is_toml else yaml.load(
+                f, Loader=yaml.FullLoader)
 
             if 'memtemp' in data["main"]["plugins"]:
                 if 'enabled' in data["main"]["plugins"]["memtemp"]:
@@ -36,5 +47,5 @@ class PwnClock(plugins.Plugin):
 
     def on_ui_update(self, ui):
         now = datetime.datetime.now()
-        time_rn = now.strftime("%m/%d/%y\n%I:%M%p")
+        time_rn = now.strftime(self.date_format + "\n%I:%M %p")
         ui.set('clock', time_rn)

@@ -28,7 +28,7 @@ class Telegram(plugins.Plugin):
 
             logging.info("Detected new activity and internet, time to send a message!")
 
-            picture = '/root/pwnagocthi.png'
+            picture = '/root/pwnagotchi.png'
             display.on_manual_mode(last_session)
             display.image().save(picture, 'png')
             display.update(force=True)
