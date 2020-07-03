@@ -12,7 +12,7 @@ import pwnagotchi.ui.fonts as fonts
 
 class hashie(plugins.Plugin):
     __author__ = 'junohea.mail@gmail.com'
-    __version__ = '1.0.0'
+    __version__ = '1.0.1'
     __license__ = 'GPL3'
     __description__ = '''
                         Attempt to automatically convert pcaps to a crackable format.
@@ -53,17 +53,8 @@ class hashie(plugins.Plugin):
         logging.info("[hashie] plugin loaded")
         self.lock = Lock()
 
-    # called when the plugin is loaded
-    def on_loaded(self):
-        pass
-
-    # called when there's internet connectivity
-    def on_internet_available(self, agent):
-        pass
-
     # called when everything is ready and the main loop is about to start
-    def on_ready(self, agent):
-        config = agent.config()
+    def on_config_changed(self, config):
         handshake_dir = config['bettercap']['handshakes']
         
         if 'interval' not in self.options or not (self.status.newer_then_hours(self.options['interval'])):
