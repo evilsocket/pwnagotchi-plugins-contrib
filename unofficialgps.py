@@ -28,7 +28,6 @@ class UnofficialGPS(plugins.Plugin):
 
     def on_ready(self, agent):
         if os.path.exists(self.options["device"]):
-            #logging.info(self.coordinates)
             logging.info(
                 f"enabling unofficial-gps module for {self.options['device']}"
             )
@@ -50,7 +49,6 @@ class UnofficialGPS(plugins.Plugin):
     def handle_serial_data(self, data):
         if len(data) >= 7:
             message = data[0:6]
-            #logging.info(message)
             if (message == "$GPGGA"):
                 parts = data.split(",")
                 
@@ -71,8 +69,7 @@ class UnofficialGPS(plugins.Plugin):
                     geoidal_separation, 
                     geoidal_separation_unit, 
                     data_age, 
-                    diff_ref_stationID) = data.split(",")
-                    #logging.info(quality)                    
+                    diff_ref_stationID) = data.split(",")                  
                     quality=int(quality)
                     if quality > 0:
                         latitude_in=float(latitude)
@@ -102,7 +99,6 @@ class UnofficialGPS(plugins.Plugin):
                             self.coordinates['FixQuality'] = quality
                             self.coordinates['HDOP'] = float(horizontal_dilution)
                             self.coordinates['Separation'] = float(geoidal_separation)
-                        #logging.info('updated coordinates gps')
                 except Exception as ex:
                     logging.info(ex)
             else:
