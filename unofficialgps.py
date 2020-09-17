@@ -50,8 +50,6 @@ class UnofficialGPS(plugins.Plugin):
         if len(data) >= 7:
             message = data[0:6]
             if (message == "$GPGGA"):
-                parts = data.split(",")
-                
                 try:
                     # Get the position data that was transmitted with the GPRMC message
                     # refer to: http://aprs.gids.nl/nmea/#rmc
