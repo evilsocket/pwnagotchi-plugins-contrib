@@ -1,0 +1,46 @@
+main.plugins.buttonshim.enabled = false
+
+main.plugins.buttonshim.buttons.A.command = ""
+main.plugins.buttonshim.buttons.A.blink.enabled = false
+main.plugins.buttonshim.buttons.A.blink.red = 0
+main.plugins.buttonshim.buttons.A.blink.green = 0
+main.plugins.buttonshim.buttons.A.blink.blue = 0
+main.plugins.buttonshim.buttons.A.blink.on_time = 0
+main.plugins.buttonshim.buttons.A.blink.off_time = 0
+main.plugins.buttonshim.buttons.A.blink.blink_times = 0
+
+main.plugins.buttonshim.buttons.B.command = ""
+main.plugins.buttonshim.buttons.B.blink.enabled = false
+main.plugins.buttonshim.buttons.B.blink.red = 0
+main.plugins.buttonshim.buttons.B.blink.green = 0
+main.plugins.buttonshim.buttons.B.blink.blue = 0
+main.plugins.buttonshim.buttons.B.blink.on_time = 0
+main.plugins.buttonshim.buttons.B.blink.off_time = 0
+main.plugins.buttonshim.buttons.B.blink.blink_times = 0
+
+main.plugins.buttonshim.buttons.C.command = ""
+main.plugins.buttonshim.buttons.C.blink.enabled = false
+main.plugins.buttonshim.buttons.C.blink.red = 0
+main.plugins.buttonshim.buttons.C.blink.green = 0
+main.plugins.buttonshim.buttons.C.blink.blue = 0
+main.plugins.buttonshim.buttons.C.blink.on_time = 0
+main.plugins.buttonshim.buttons.C.blink.off_time = 0
+main.plugins.buttonshim.buttons.C.blink.blink_times = 0
+
+main.plugins.buttonshim.buttons.D.command = ""
+main.plugins.buttonshim.buttons.D.blink.enabled = false
+main.plugins.buttonshim.buttons.D.blink.red = 0
+main.plugins.buttonshim.buttons.D.blink.green = 0
+main.plugins.buttonshim.buttons.D.blink.blue = 0
+main.plugins.buttonshim.buttons.D.blink.on_time = 0
+main.plugins.buttonshim.buttons.D.blink.off_time = 0
+main.plugins.buttonshim.buttons.D.blink.blink_times = 0
+
+main.plugins.buttonshim.buttons.E.command = ""
+main.plugins.buttonshim.buttons.E.blink.enabled = false
+main.plugins.buttonshim.buttons.E.blink.red = 0
+main.plugins.buttonshim.buttons.E.blink.green = 0
+main.plugins.buttonshim.buttons.E.blink.blue = 0
+main.plugins.buttonshim.buttons.E.blink.on_time = 0
+main.plugins.buttonshim.buttons.E.blink.off_time = 0
+main.plugins.buttonshim.buttons.E.blink.blink_times = 0
