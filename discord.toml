@@ -1,0 +1,3 @@
+main.plugins.discord.enabled = false # requires discord.py module to work (pip3 install discord.py)
+main.plugins.discord.webhook_url = ~
+main.plugins.discord.username = "pwnagotchi " # defaults to hostname if not set
