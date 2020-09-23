@@ -1,0 +1,5 @@
+main.plugins.twitter.enabled = false
+main.plugins.twitter.consumer_key = ""
+main.plugins.twitter.consumer_secret = ""
+main.plugins.twitter.access_token_key = ""
+main.plugins.twitter.access_token_secret = ""
