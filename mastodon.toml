@@ -1,0 +1,5 @@
+main.plugins.mastodon.enabled = false
+main.plugins.mastodon.instance_url = ""
+main.plugins.mastodon.visibility= "unlisted"
+main.plugins.mastodon.email = ""
+main.plugins.mastodon.password = ""
