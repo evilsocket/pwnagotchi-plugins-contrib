@@ -1,0 +1,15 @@
+main.plugins.auto_backup.enabled = true
+main.plugins.auto_backup.interval = 1 # every day
+main.plugins.auto_backup.max_tries = 0 # 0=infinity
+main.plugins.auto_backup.files = [
+  "/root/brain.nn",
+  "root/brain.json",
+  "/root/.api-report.json",
+  "/root/handshakes/",
+  "/root/peers/",
+  "/etc/pwnagotchi/",
+  "var/log/pwnagotchi.log"
+]
+main.plugins.auto_backup.commands = [
+  "tar czf /root/pwnagotchi-backup.tar.gz {files}"
+]
