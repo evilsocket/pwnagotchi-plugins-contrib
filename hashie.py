@@ -9,10 +9,19 @@ from pwnagotchi.ui.components import LabeledValue
 from pwnagotchi.ui.view import BLACK
 import pwnagotchi.ui.fonts as fonts
 
+'''
+hcxpcapngtool needed, to install:
+> git clone https://github.com/ZerBea/hcxtools.git
+> cd hcxtools
+> apt-get install libcurl4-openssl-dev libssl-dev zlib1g-dev
+> make
+> sudo make install
+'''
+
 
 class hashie(plugins.Plugin):
     __author__ = 'junohea.mail@gmail.com'
-    __version__ = '1.0.1'
+    __version__ = '1.0.2'
     __license__ = 'GPL3'
     __description__ = '''
                         Attempt to automatically convert pcaps to a crackable format.
@@ -27,7 +36,7 @@ class hashie(plugins.Plugin):
                         Why use it?:
                           - Automatically convert handshakes to crackable formats! 
                               We dont all upload our hashes online ;)
-                          - Repair PMKID handshakes that hcxpcaptool misses
+                          - Repair PMKID handshakes that hcxpcapngtool misses
                           - If running at time of handshake capture, on_handshake can
                               be used to improve the chance of the repair succeeding
                           - Be a completionist! Not enough packets captured to crack a network?
@@ -35,15 +44,15 @@ class hashie(plugins.Plugin):
                               location data to revisit networks you need more packets for!
                           
                         Additional information:
-                          - Currently requires hcxpcaptool compiled and installed
-                          - Attempts to repair PMKID hashes when hcxpcaptool cant find the SSID
-                            - hcxpcaptool sometimes has trouble extracting the SSID, so we 
+                          - Currently requires hcxpcapngtool compiled and installed
+                          - Attempts to repair PMKID hashes when hcxpcapngtool cant find the SSID
+                            - hcxpcapngtool sometimes has trouble extracting the SSID, so we 
                                 use the raw 16800 output and attempt to retrieve the SSID via tcpdump
                             - When access_point data is available (on_handshake), we leverage 
                                 the reported AP name and MAC to complete the hash
                             - The repair is very basic and could certainly be improved!
                         Todo:
-                          Make it so users dont need hcxpcaptool (unless it gets added to the base image)
+                          Make it so users dont need hcxpcapngtool (unless it gets added to the base image)
                               Phase 1: Extract/construct 2500/16800 hashes through tcpdump commands
                               Phase 2: Extract/construct 2500/16800 hashes entirely in python
                           Improve the code, a lot
@@ -84,7 +93,7 @@ class hashie(plugins.Plugin):
     def _writeEAPOL(self, fullpath):
         fullpathNoExt = fullpath.split('.')[0]
         filename = fullpath.split('/')[-1:][0].split('.')[0]
-        result = subprocess.getoutput('hcxpcaptool -o {}.2500 {} >/dev/null 2>&1'.format(fullpathNoExt,fullpath))
+        result = subprocess.getoutput('hcxpcapngtool -o {}.2500 {} >/dev/null 2>&1'.format(fullpathNoExt,fullpath))
         if os.path.isfile(fullpathNoExt +  '.2500'):
             logging.debug('[hashie] [+] EAPOL Success: {}.2500 created'.format(filename))
             return True
@@ -94,12 +103,12 @@ class hashie(plugins.Plugin):
     def _writePMKID(self, fullpath, apJSON):
         fullpathNoExt = fullpath.split('.')[0]
         filename = fullpath.split('/')[-1:][0].split('.')[0]
-        result = subprocess.getoutput('hcxpcaptool -k {}.16800 {} >/dev/null 2>&1'.format(fullpathNoExt,fullpath))
+        result = subprocess.getoutput('hcxpcapngtool -k {}.16800 {} >/dev/null 2>&1'.format(fullpathNoExt,fullpath))
         if os.path.isfile(fullpathNoExt + '.16800'):
             logging.debug('[hashie] [+] PMKID Success: {}.16800 created'.format(filename))
             return True
         else: #make a raw dump
-            result = subprocess.getoutput('hcxpcaptool -K {}.16800 {} >/dev/null 2>&1'.format(fullpathNoExt,fullpath))
+            result = subprocess.getoutput('hcxpcapngtool -K {}.16800 {} >/dev/null 2>&1'.format(fullpathNoExt,fullpath))
             if os.path.isfile(fullpathNoExt + '.16800'):
                 if self._repairPMKID(fullpath, apJSON) == False:
                     logging.debug('[hashie] [-] PMKID Fail: {}.16800 could not be repaired'.format(filename))
@@ -122,8 +131,8 @@ class hashie(plugins.Plugin):
         if apJSON != "": 
             clientString.append('{}:{}'.format(apJSON['mac'].replace(':',''), apJSON['hostname'].encode('hex')))
         else:
-            #attempt to extract the AP's name via hcxpcaptool
-            result = subprocess.getoutput('hcxpcaptool -X /tmp/{} {} >/dev/null 2>&1'.format(filename,fullpath))
+            #attempt to extract the AP's name via hcxpcapngtool
+            result = subprocess.getoutput('hcxpcapngtool -X /tmp/{} {} >/dev/null 2>&1'.format(filename,fullpath))
             if os.path.isfile('/tmp/' + filename):
                 with open('/tmp/' + filename,'r') as tempFileB:
                     temp = tempFileB.read().splitlines()
