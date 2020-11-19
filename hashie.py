@@ -28,7 +28,7 @@ class hashie(plugins.Plugin):
                         If successful, the files  containing the hashes will be saved 
                         in the same folder as the handshakes. 
                         The files are saved in their respective Hashcat format:
-                          - EAPOL hashes are saved as *.2500
+                          - EAPOL hashes are saved as *.22000
                           - PMKID hashes are saved as *.16800
                         All PCAP files without enough information to create a hash are
                           stored in a file that can be read by the webgpsmap plugin.
@@ -53,8 +53,8 @@ class hashie(plugins.Plugin):
                             - The repair is very basic and could certainly be improved!
                         Todo:
                           Make it so users dont need hcxpcapngtool (unless it gets added to the base image)
-                              Phase 1: Extract/construct 2500/16800 hashes through tcpdump commands
-                              Phase 2: Extract/construct 2500/16800 hashes entirely in python
+                              Phase 1: Extract/construct 22000/16800 hashes through tcpdump commands
+                              Phase 2: Extract/construct 22000/16800 hashes entirely in python
                           Improve the code, a lot
                         '''
     
@@ -77,10 +77,10 @@ class hashie(plugins.Plugin):
             fullpathNoExt = filename.split('.')[0]
             name = filename.split('/')[-1:][0].split('.')[0]
             
-            if os.path.isfile(fullpathNoExt +  '.2500'):
-                handshake_status.append('Already have {}.2500 (EAPOL)'.format(name))
+            if os.path.isfile(fullpathNoExt +  '.22000'):
+                handshake_status.append('Already have {}.22000 (EAPOL)'.format(name))
             elif self._writeEAPOL(filename):
-                handshake_status.append('Created {}.2500 (EAPOL) from pcap'.format(name))
+                handshake_status.append('Created {}.22000 (EAPOL) from pcap'.format(name))
             
             if os.path.isfile(fullpathNoExt +  '.16800'):
                 handshake_status.append('Already have {}.16800 (PMKID)'.format(name))
@@ -93,9 +93,9 @@ class hashie(plugins.Plugin):
     def _writeEAPOL(self, fullpath):
         fullpathNoExt = fullpath.split('.')[0]
         filename = fullpath.split('/')[-1:][0].split('.')[0]
-        result = subprocess.getoutput('hcxpcapngtool -o {}.2500 {} >/dev/null 2>&1'.format(fullpathNoExt,fullpath))
-        if os.path.isfile(fullpathNoExt +  '.2500'):
-            logging.debug('[hashie] [+] EAPOL Success: {}.2500 created'.format(filename))
+        result = subprocess.getoutput('hcxpcapngtool -o {}.22000 {} >/dev/null 2>&1'.format(fullpathNoExt,fullpath))
+        if os.path.isfile(fullpathNoExt +  '.22000'):
+            logging.debug('[hashie] [+] EAPOL Success: {}.22000 created'.format(filename))
             return True
         else:
             return False
@@ -168,17 +168,17 @@ class hashie(plugins.Plugin):
         for num, handshake in enumerate(handshakes_list):
             fullpathNoExt = handshake.split('.')[0]
             pcapFileName = handshake.split('/')[-1:][0]
-            if not os.path.isfile(fullpathNoExt + '.2500'): #if no 2500, try
+            if not os.path.isfile(fullpathNoExt + '.22000'): #if no 22000, try
                 if self._writeEAPOL(handshake):
-                    successful_jobs.append('2500: ' + pcapFileName)
+                    successful_jobs.append('22000: ' + pcapFileName)
                 else:
-                    failed_jobs.append('2500: ' + pcapFileName)
+                    failed_jobs.append('22000: ' + pcapFileName)
             if not os.path.isfile(fullpathNoExt + '.16800'): #if no 16800, try
                 if self._writePMKID(handshake, ""):
                     successful_jobs.append('16800: ' + pcapFileName)
                 else:
                     failed_jobs.append('16800: ' + pcapFileName)
-                    if not os.path.isfile(fullpathNoExt + '.2500'): #if no 16800 AND no 2500
+                    if not os.path.isfile(fullpathNoExt + '.22000'): #if no 16800 AND no 22000
                         lonely_pcaps.append(handshake)
                         logging.debug('[hashie] Batch job: added {} to lonely list'.format(pcapFileName))
             if ((num + 1) % 50 == 0) or (num + 1 == len(handshakes_list)): #report progress every 50, or when done
