@@ -95,7 +95,7 @@ class HandshakesDL(plugins.Plugin):
             for path in pcapfiles:
                 name = os.path.basename(path)[:-5]
                 fullpathNoExt = path[:-5]
-                possibleExt = ['.2500', '.16800']
+                possibleExt = ['.2500', '.16800', '.22000']
                 foundExt = ['.pcap']
                 for ext in possibleExt: 
                     if os.path.isfile(fullpathNoExt +  ext):
