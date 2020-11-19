@@ -101,15 +101,9 @@ class HandshakesDL(plugins.Plugin):
                     if os.path.isfile(fullpathNoExt +  ext):
                         foundExt.append(ext)
                 data.append(handshakes(name, fullpathNoExt, foundExt)) 
-                
-            for obj in data: 
-                print( obj.path, obj.ext) 
-            
-            # pcapfiles = [os.path.basename(path)[:-5] for path in pcapfiles]
             return render_template_string(TEMPLATE,
                                     title="Handshakes | " + pwnagotchi.name(),
                                     handshakes=data)
-
         else:
             dir = self.config['bettercap']['handshakes']
             try:
