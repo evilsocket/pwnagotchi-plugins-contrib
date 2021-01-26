@@ -1,14 +1,16 @@
-import logging
-import json
-import os
 import glob
+import json
+import logging
+import os
+import zipfile
+from io import BytesIO
 
 import pwnagotchi
 import pwnagotchi.plugins as plugins
-
 from flask import abort
-from flask import send_from_directory
 from flask import render_template_string
+from flask import send_file
+from flask import send_from_directory
 
 TEMPLATE = """
 {% extends "base.html" %}
@@ -54,6 +56,7 @@ TEMPLATE = """
 {% endblock %}
 
 {% block content %}
+    <a class="ui-btn" href="/plugins/handshakes-dl/all">Download Zip</a>
     <input type="text" id="filter" placeholder="Search for ..." title="Type in a filter">
     <ul id="list" data-role="listview" style="list-style-type:disc;">
         {% for handshake in handshakes %}
@@ -65,11 +68,12 @@ TEMPLATE = """
 {% endblock %}
 """
 
+
 class HandshakesDL(plugins.Plugin):
-    __author__ = 'me@sayakb.com'
-    __version__ = '0.2.1'
-    __license__ = 'GPL3'
-    __description__ = 'Download handshake captures from web-ui.'
+    __author__ = "me@sayakb.com"
+    __version__ = "0.2.2"
+    __license__ = "GPL3"
+    __description__ = "Download handshake captures from web-ui."
 
     def __init__(self):
         self.ready = False
@@ -86,16 +90,38 @@ class HandshakesDL(plugins.Plugin):
             return "Plugin not ready"
 
         if path == "/" or not path:
-            handshakes = glob.glob(os.path.join(self.config['bettercap']['handshakes'], "*.pcap"))
+            handshakes = glob.glob(
+                os.path.join(self.config["bettercap"]["handshakes"], "*.pcap"))
             handshakes = [os.path.basename(path)[:-5] for path in handshakes]
-            return render_template_string(TEMPLATE,
-                                    title="Handshakes | " + pwnagotchi.name(),
-                                    handshakes=handshakes)
-
+            return render_template_string(
+                TEMPLATE,
+                title="Handshakes | " + pwnagotchi.name(),
+                handshakes=handshakes,
+            )
+        elif path == "all":
+            logging.info(f"[HandshakesDL] creating Zip-File in memory")
+            memory_file = BytesIO()
+            with zipfile.ZipFile(memory_file, "w") as zf:
+                files = glob.glob(
+                    os.path.join(self.config["bettercap"]["handshakes"],
+                                 "*.pcap"))
+                try:
+                    for individualFile in files:
+                        zf.write(individualFile)
+                except Exception as e:
+                    logging.error(f"[HandshakesDL] {e}")
+                    abort(404)
+            memory_file.seek(0)
+            logging.info(f"[HandshakesDL] serving handshakes.zip")
+            return send_file(memory_file,
+                             attachment_filename="handshakes.zip",
+                             as_attachment=True)
         else:
-            dir = self.config['bettercap']['handshakes']
+            dir = self.config["bettercap"]["handshakes"]
             try:
                 logging.info(f"[HandshakesDL] serving {dir}/{path}.pcap")
-                return send_from_directory(directory=dir, filename=path+'.pcap', as_attachment=True)
+                return send_from_directory(directory=dir,
+                                           filename=path + ".pcap",
+                                           as_attachment=True)
             except FileNotFoundError:
                 abort(404)
