@@ -12,15 +12,23 @@ import yaml
 
 class PwnClock(plugins.Plugin):
     __author__ = 'https://github.com/LoganMD'
-    __version__ = '1.0.2'
+    __version__ = '1.0.3'
     __license__ = 'GPL3'
     __description__ = 'Clock/Calendar for pwnagotchi'
+    __defaults__ = {
+        'enabled': False,
+    }
 
     def on_loaded(self):
         if 'date_format' in self.options:
             self.date_format = self.options['date_format']
         else:
             self.date_format = "%m/%d/%y"
+
+        if 'time_format' in self.options:
+            self.time_format = self.options['time_format']
+        else:
+            self.time_format = "%I:%M %p"
 
         logging.info("Pwnagotchi Clock Plugin loaded.")
 
@@ -47,5 +55,5 @@ class PwnClock(plugins.Plugin):
 
     def on_ui_update(self, ui):
         now = datetime.datetime.now()
-        time_rn = now.strftime(self.date_format + "\n%I:%M %p")
+        time_rn = now.strftime(self.date_format + "\n" + self.time_format)
         ui.set('clock', time_rn)
