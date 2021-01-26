@@ -13,11 +13,9 @@ from flask import render_template_string
 TEMPLATE = """
 {% extends "base.html" %}
 {% set active_page = "handshakes" %}
-
 {% block title %}
     {{ title }}
 {% endblock %}
-
 {% block styles %}
     {{ super() }}
     <style>
@@ -34,7 +32,6 @@ TEMPLATE = """
     var shakeList = document.getElementById('list');
     var filter = document.getElementById('filter');
     var filterVal = filter.value.toUpperCase();
-
     filter.onkeyup = function() {
         document.body.style.cursor = 'progress';
         var table, tr, tds, td, i, txtValue;
@@ -50,24 +47,30 @@ TEMPLATE = """
         }
         document.body.style.cursor = 'default';
     }
-
 {% endblock %}
-
 {% block content %}
     <input type="text" id="filter" placeholder="Search for ..." title="Type in a filter">
     <ul id="list" data-role="listview" style="list-style-type:disc;">
         {% for handshake in handshakes %}
-            <li class="file">
-                <a href="/plugins/handshakes-dl/{{handshake}}">{{handshake}}</a>
-            </li>
+            {% for ext in handshake.ext %}
+                <li class="file">
+                    <a href="/plugins/handshakes-dl/{{handshake.name}}{{ext}}">{{handshake.name}}{{ext}}</a>
+                </li>
+            {% endfor %}
         {% endfor %}
     </ul>
 {% endblock %}
 """
 
+class handshakes:  
+    def __init__(self, name, path, ext):  
+        self.name = name  
+        self.path = path  
+        self.ext = ext 
+
 class HandshakesDL(plugins.Plugin):
     __author__ = 'me@sayakb.com'
-    __version__ = '0.2.1'
+    __version__ = '0.2.2'
     __license__ = 'GPL3'
     __description__ = 'Download handshake captures from web-ui.'
 
@@ -86,16 +89,25 @@ class HandshakesDL(plugins.Plugin):
             return "Plugin not ready"
 
         if path == "/" or not path:
-            handshakes = glob.glob(os.path.join(self.config['bettercap']['handshakes'], "*.pcap"))
-            handshakes = [os.path.basename(path)[:-5] for path in handshakes]
+            pcapfiles = glob.glob(os.path.join(self.config['bettercap']['handshakes'], "*.pcap"))
+            
+            data = []
+            for path in pcapfiles:
+                name = os.path.basename(path)[:-5]
+                fullpathNoExt = path[:-5]
+                possibleExt = ['.2500', '.16800', '.22000']
+                foundExt = ['.pcap']
+                for ext in possibleExt: 
+                    if os.path.isfile(fullpathNoExt +  ext):
+                        foundExt.append(ext)
+                data.append(handshakes(name, fullpathNoExt, foundExt)) 
             return render_template_string(TEMPLATE,
                                     title="Handshakes | " + pwnagotchi.name(),
-                                    handshakes=handshakes)
-
+                                    handshakes=data)
         else:
             dir = self.config['bettercap']['handshakes']
             try:
-                logging.info(f"[HandshakesDL] serving {dir}/{path}.pcap")
-                return send_from_directory(directory=dir, filename=path+'.pcap', as_attachment=True)
+                logging.info(f"[HandshakesDL] serving {dir}/{path}")
+                return send_from_directory(directory=dir, filename=path, as_attachment=True)
             except FileNotFoundError:
                 abort(404)
