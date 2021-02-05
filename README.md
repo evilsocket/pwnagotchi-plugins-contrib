@@ -1,34 +1,15 @@
 These are user contributed plugins for [pwnagotchi](https://github.com/evilsocket/pwnagotchi), some of them have not been 
 completely tested by the dev team, **use them at your own risk**.
 
-In order to use these plugins, clone the repository anywhere on your unit and then add its path to `/etc/pwnagotchi/config.yml` as:
+In order to use these plugins, clone the repository anywhere on your unit and then add its path to `/etc/pwnagotchi/config.toml` as:
 
 ```yaml
-main:
-  custom_plugins: "/path/to/this/folder"
+main.custom_plugins = "/path/to/this/folder"
 ```
+This line (main.custom_plugins = "") should already be in your config.toml. You just need to update the path.
 
-Each plugin has its own configuration than must be part of the `main.plugins` section. If for instance you want to enable
-the auto_backup plugin, you need to edit your config.yml and add this:
 
-```yaml
-main:
-  custom_plugins: "/path/to/this/folder"
-  plugins:
-    auto_backup:
-        enabled: true
-        interval: 1 # every day
-        max_tries: 0 # 0=infinity
-        files:
-            - /root/brain.nn
-            - /root/brain.json
-            - /root/.api-report.json
-            - /root/handshakes/
-            - /root/peers/
-            - /etc/pwnagotchi/
-            - /var/log/pwnagotchi.log
-        commands:
-            - 'tar czf /root/pwnagotchi-backup.tar.gz {files}'
+Each plugin has its own configuration which is created in config.toml when you activate the plugin. 
 ```
 
 ## License
