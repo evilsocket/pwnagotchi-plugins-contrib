@@ -9,17 +9,26 @@ from pwnagotchi.ui.components import LabeledValue
 from pwnagotchi.ui.view import BLACK
 import pwnagotchi.ui.fonts as fonts
 
+'''
+hcxpcapngtool needed, to install:
+> git clone https://github.com/ZerBea/hcxtools.git
+> cd hcxtools
+> apt-get install libcurl4-openssl-dev libssl-dev zlib1g-dev
+> make
+> sudo make install
+'''
+
 
 class hashie(plugins.Plugin):
     __author__ = 'junohea.mail@gmail.com'
-    __version__ = '1.0.1'
+    __version__ = '1.0.2'
     __license__ = 'GPL3'
     __description__ = '''
                         Attempt to automatically convert pcaps to a crackable format.
                         If successful, the files  containing the hashes will be saved 
                         in the same folder as the handshakes. 
                         The files are saved in their respective Hashcat format:
-                          - EAPOL hashes are saved as *.2500
+                          - EAPOL hashes are saved as *.22000
                           - PMKID hashes are saved as *.16800
                         All PCAP files without enough information to create a hash are
                           stored in a file that can be read by the webgpsmap plugin.
@@ -27,7 +36,7 @@ class hashie(plugins.Plugin):
                         Why use it?:
                           - Automatically convert handshakes to crackable formats! 
                               We dont all upload our hashes online ;)
-                          - Repair PMKID handshakes that hcxpcaptool misses
+                          - Repair PMKID handshakes that hcxpcapngtool misses
                           - If running at time of handshake capture, on_handshake can
                               be used to improve the chance of the repair succeeding
                           - Be a completionist! Not enough packets captured to crack a network?
@@ -35,17 +44,17 @@ class hashie(plugins.Plugin):
                               location data to revisit networks you need more packets for!
                           
                         Additional information:
-                          - Currently requires hcxpcaptool compiled and installed
-                          - Attempts to repair PMKID hashes when hcxpcaptool cant find the SSID
-                            - hcxpcaptool sometimes has trouble extracting the SSID, so we 
+                          - Currently requires hcxpcapngtool compiled and installed
+                          - Attempts to repair PMKID hashes when hcxpcapngtool cant find the SSID
+                            - hcxpcapngtool sometimes has trouble extracting the SSID, so we 
                                 use the raw 16800 output and attempt to retrieve the SSID via tcpdump
                             - When access_point data is available (on_handshake), we leverage 
                                 the reported AP name and MAC to complete the hash
                             - The repair is very basic and could certainly be improved!
                         Todo:
-                          Make it so users dont need hcxpcaptool (unless it gets added to the base image)
-                              Phase 1: Extract/construct 2500/16800 hashes through tcpdump commands
-                              Phase 2: Extract/construct 2500/16800 hashes entirely in python
+                          Make it so users dont need hcxpcapngtool (unless it gets added to the base image)
+                              Phase 1: Extract/construct 22000/16800 hashes through tcpdump commands
+                              Phase 2: Extract/construct 22000/16800 hashes entirely in python
                           Improve the code, a lot
                         '''
     
@@ -68,10 +77,10 @@ class hashie(plugins.Plugin):
             fullpathNoExt = filename.split('.')[0]
             name = filename.split('/')[-1:][0].split('.')[0]
             
-            if os.path.isfile(fullpathNoExt +  '.2500'):
-                handshake_status.append('Already have {}.2500 (EAPOL)'.format(name))
+            if os.path.isfile(fullpathNoExt +  '.22000'):
+                handshake_status.append('Already have {}.22000 (EAPOL)'.format(name))
             elif self._writeEAPOL(filename):
-                handshake_status.append('Created {}.2500 (EAPOL) from pcap'.format(name))
+                handshake_status.append('Created {}.22000 (EAPOL) from pcap'.format(name))
             
             if os.path.isfile(fullpathNoExt +  '.16800'):
                 handshake_status.append('Already have {}.16800 (PMKID)'.format(name))
@@ -84,9 +93,9 @@ class hashie(plugins.Plugin):
     def _writeEAPOL(self, fullpath):
         fullpathNoExt = fullpath.split('.')[0]
         filename = fullpath.split('/')[-1:][0].split('.')[0]
-        result = subprocess.getoutput('hcxpcaptool -o {}.2500 {} >/dev/null 2>&1'.format(fullpathNoExt,fullpath))
-        if os.path.isfile(fullpathNoExt +  '.2500'):
-            logging.debug('[hashie] [+] EAPOL Success: {}.2500 created'.format(filename))
+        result = subprocess.getoutput('hcxpcapngtool -o {}.22000 {} >/dev/null 2>&1'.format(fullpathNoExt,fullpath))
+        if os.path.isfile(fullpathNoExt +  '.22000'):
+            logging.debug('[hashie] [+] EAPOL Success: {}.22000 created'.format(filename))
             return True
         else:
             return False
@@ -94,12 +103,12 @@ class hashie(plugins.Plugin):
     def _writePMKID(self, fullpath, apJSON):
         fullpathNoExt = fullpath.split('.')[0]
         filename = fullpath.split('/')[-1:][0].split('.')[0]
-        result = subprocess.getoutput('hcxpcaptool -k {}.16800 {} >/dev/null 2>&1'.format(fullpathNoExt,fullpath))
+        result = subprocess.getoutput('hcxpcapngtool -k {}.16800 {} >/dev/null 2>&1'.format(fullpathNoExt,fullpath))
         if os.path.isfile(fullpathNoExt + '.16800'):
             logging.debug('[hashie] [+] PMKID Success: {}.16800 created'.format(filename))
             return True
         else: #make a raw dump
-            result = subprocess.getoutput('hcxpcaptool -K {}.16800 {} >/dev/null 2>&1'.format(fullpathNoExt,fullpath))
+            result = subprocess.getoutput('hcxpcapngtool -K {}.16800 {} >/dev/null 2>&1'.format(fullpathNoExt,fullpath))
             if os.path.isfile(fullpathNoExt + '.16800'):
                 if self._repairPMKID(fullpath, apJSON) == False:
                     logging.debug('[hashie] [-] PMKID Fail: {}.16800 could not be repaired'.format(filename))
@@ -122,8 +131,8 @@ class hashie(plugins.Plugin):
         if apJSON != "": 
             clientString.append('{}:{}'.format(apJSON['mac'].replace(':',''), apJSON['hostname'].encode('hex')))
         else:
-            #attempt to extract the AP's name via hcxpcaptool
-            result = subprocess.getoutput('hcxpcaptool -X /tmp/{} {} >/dev/null 2>&1'.format(filename,fullpath))
+            #attempt to extract the AP's name via hcxpcapngtool
+            result = subprocess.getoutput('hcxpcapngtool -X /tmp/{} {} >/dev/null 2>&1'.format(filename,fullpath))
             if os.path.isfile('/tmp/' + filename):
                 with open('/tmp/' + filename,'r') as tempFileB:
                     temp = tempFileB.read().splitlines()
@@ -159,17 +168,17 @@ class hashie(plugins.Plugin):
         for num, handshake in enumerate(handshakes_list):
             fullpathNoExt = handshake.split('.')[0]
             pcapFileName = handshake.split('/')[-1:][0]
-            if not os.path.isfile(fullpathNoExt + '.2500'): #if no 2500, try
+            if not os.path.isfile(fullpathNoExt + '.22000'): #if no 22000, try
                 if self._writeEAPOL(handshake):
-                    successful_jobs.append('2500: ' + pcapFileName)
+                    successful_jobs.append('22000: ' + pcapFileName)
                 else:
-                    failed_jobs.append('2500: ' + pcapFileName)
+                    failed_jobs.append('22000: ' + pcapFileName)
             if not os.path.isfile(fullpathNoExt + '.16800'): #if no 16800, try
                 if self._writePMKID(handshake, ""):
                     successful_jobs.append('16800: ' + pcapFileName)
                 else:
                     failed_jobs.append('16800: ' + pcapFileName)
-                    if not os.path.isfile(fullpathNoExt + '.2500'): #if no 16800 AND no 2500
+                    if not os.path.isfile(fullpathNoExt + '.22000'): #if no 16800 AND no 22000
                         lonely_pcaps.append(handshake)
                         logging.debug('[hashie] Batch job: added {} to lonely list'.format(pcapFileName))
             if ((num + 1) % 50 == 0) or (num + 1 == len(handshakes_list)): #report progress every 50, or when done
