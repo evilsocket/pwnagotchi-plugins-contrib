@@ -21,7 +21,7 @@ class PMKIDPackage(object):
     ESSID = ""
 
 '''
-hcxpcapngtool needed, to install:
+hcxpcapngtool is required, to install:
 > git clone https://github.com/ZerBea/hcxtools.git
 > cd hcxtools
 > apt-get install libcurl4-openssl-dev libssl-dev zlib1g-dev
