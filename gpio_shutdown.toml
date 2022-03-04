@@ -1,0 +1,2 @@
+main.plugins.gpio_shutdown.enabled = false
+main.plugins.gpio_shutdown.gpio = 21

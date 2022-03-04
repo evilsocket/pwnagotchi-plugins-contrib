@@ -1,0 +1,3 @@
+main.plugins.quickdic.enabled = false
+main.plugins.quickdic.wordlist_folder = "/opt/wordlists/"
+main.plugins.quickdic.face = "(·ω·)"

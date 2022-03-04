@@ -1,0 +1,6 @@
+main.plugins.telegram.enabled = false
+main.plugins.telegram.bot_token = ~
+main.plugins.telegram.bot_name = "pwnagotchi"
+main.plugins.telegram.chat_id = ~
+main.plugins.telegram.send_picture = true
+main.plugins.telegram.send_message = true

@@ -1,0 +1,2 @@
+main.plugins.screen_refresh.enabled = false
+main.plugins.screen_refresh.refresh_interval = 50
