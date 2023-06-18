@@ -1,0 +1,13 @@
+main.plugins.birthday.enabled = true
+main.plugins.birthday.age_x_coord = 0
+main.plugins.birthday.age_y_coord = 32
+main.plugins.birthday.show_age = true
+main.plugins.birthday.show_birthday = false
+
+#--To Show Age--
+#show_age = true
+#show_birthday = false
+
+#--To Show Birthday--
+#show_age = false
+#show_birthday = true
