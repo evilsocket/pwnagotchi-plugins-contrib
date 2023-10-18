@@ -75,3 +75,5 @@ class MastodonStatus(plugins.Plugin):
                     self.post_to_mastodon(agent, last_session, api_base_url, token, visibility)
                 except Exception as post_exception:
                     logging.error("[mastodon] Error while posting: %s" % str(post_exception))
+        except Exception as on_internet_available:
+                    logging.error("[mastodon] Error while initiating on_internet_available: %s" % str(on_internet_available))
